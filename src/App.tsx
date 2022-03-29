@@ -9,6 +9,7 @@ import { MountainChat } from "./components/MountainChat";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { selectmountain } from "./features/mountainSlice";
+import { AuthedRoute } from "./components/AuthedRoute";
 
 const App: VFC = () => {
   const user = useSelector(selectuser);
@@ -38,8 +39,14 @@ const App: VFC = () => {
     <>
       <BrowserRouter>
         <Routes>
-          <Route index element={user.uid ? <Home /> : <Auth />} />
-          <Route path=":postId" element={<MountainChat />} />
+          {user.uid ? (
+            <>
+              <Route path="/" element={<Home />} />
+              <Route path=":postId" element={<MountainChat />} />
+            </>
+          ) : (
+            <Route path="/" element={<Auth />} />
+          )}
         </Routes>
       </BrowserRouter>
     </>

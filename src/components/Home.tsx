@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { CardLayout } from "./CardLayout";
 import { Header } from "./Header";
 import { selectmountain, getData } from "../features/mountainSlice";
+import { Outlet } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 type MOUNTAIN = {
   id: number;
@@ -27,6 +29,7 @@ type MOUNTAINS = {
 
 export const Home: VFC = () => {
   const [mountains, setMountains] = useState<MOUNTAIN[]>([]);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const mountain = useSelector(selectmountain);
 
@@ -36,6 +39,7 @@ export const Home: VFC = () => {
       .then((res) => {
         setMountains(res.data.mountains);
         dispatch(getData(res.data.mountains));
+        setLoading(false);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -51,14 +55,20 @@ export const Home: VFC = () => {
         sx={{
           width: 960,
           height: "auto",
+          minHeight: "100vh",
           margin: "0 auto",
           display: "flex",
           flexWrap: "wrap",
+          alignItems: "center",
         }}
       >
-        {mountains.map((mountain) => (
-          <CardLayout key={mountain.id} mountain={mountain} />
-        ))}
+        {loading ? (
+          <CircularProgress sx={{ margin: "auto" }} />
+        ) : (
+          mountains.map((mountain) => (
+            <CardLayout key={mountain.id} mountain={mountain} />
+          ))
+        )}
       </Box>
     </div>
   );
