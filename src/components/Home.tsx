@@ -53,13 +53,15 @@ export const Home: VFC = () => {
       <Header />
       <Box
         sx={{
-          width: 960,
+          width: "100%",
+          maxWidth: "960px",
           height: "auto",
           minHeight: "100vh",
-          margin: "0 auto",
+          margin: "16px auto",
           display: "flex",
           flexWrap: "wrap",
           alignItems: "center",
+          flexDirection: { sm: "column", md: "row" },
         }}
       >
         {loading ? (

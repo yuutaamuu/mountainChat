@@ -92,7 +92,10 @@ export const MountainChat: VFC = () => {
   return (
     <>
       <Header />
-      <Container maxWidth="md" sx={{ boxSizing: "border-box", height: "85vh" }}>
+      <Container
+        maxWidth="md"
+        sx={{ boxSizing: "border-box", height: "85vh", marginTop: "16px" }}
+      >
         <Box
           sx={{
             backgroundColor: "white",
@@ -111,7 +114,7 @@ export const MountainChat: VFC = () => {
             height: "90%",
             overflow: "auto",
             overflowY: "scrool",
-            padding: "16px",
+            padding: "16px 0",
             boxSizing: "border-box",
             width: "100%",
             overflowWrap: "break-word",

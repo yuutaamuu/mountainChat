@@ -1,0 +1,6 @@
+.link {
+  flex-grow: 1;
+  display: flex;
+  color: white;
+  text-decoration: none;
+}
