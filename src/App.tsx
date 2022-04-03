@@ -1,7 +1,7 @@
 import React, { useEffect, VFC } from "react";
 import "./App.css";
 import { useSelector, useDispatch } from "react-redux";
-import { selectuser, login, logout } from "./features/userSlice";
+import { selectuser, logIn, logout } from "./features/userSlice";
 import { auth } from "./firebase";
 import { Home } from "./components/Home";
 import { Auth } from "./components/Auth";
@@ -20,7 +20,7 @@ const App: VFC = () => {
     const unSub = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         dispatch(
-          login({
+          logIn({
             uid: authUser.uid,
             photoUrl: authUser.photoURL,
             displayName: authUser.displayName,

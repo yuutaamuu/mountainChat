@@ -1,5 +1,6 @@
-import { VFC } from "react";
+import { useEffect, useState, VFC } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { selectuser, logIn, logout } from "../features/userSlice";
 // import { selectuser, login, logout } from "../features/userSlice";
 
 import Avatar from "@mui/material/Avatar";
@@ -16,24 +17,65 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { auth, provider } from "../firebase";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 
 const theme = createTheme();
 
 export const Auth: VFC = () => {
   const dispatch = useDispatch();
+  const [login, setLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setEmail(e.target.value);
   };
 
+  const onChangePass = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setPassword(e.target.value);
+  };
+
+  //グーグルサインイン
   const signInGoogle = async () => {
     await signInWithPopup(auth, provider).catch((err) => alert(err.message));
+  };
+
+  const onClickSignUpMail = async () => {
+    //メール登録
+    const auth = getAuth();
+    await createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        const userData = {
+          photoUrl: "",
+          displayName: "Yu",
+        };
+        dispatch(logIn(userData));
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
+
+  const onClickSignInMail = async () => {
+    const auth = getAuth();
+    await signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        alert(error.message);
+      });
   };
 
   return (
@@ -52,11 +94,11 @@ export const Auth: VFC = () => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            {login ? "Sign In" : "Sign Up"}
           </Typography>
           <Box
             component="form"
-            onSubmit={handleSubmit}
+            // onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           >
@@ -69,6 +111,8 @@ export const Auth: VFC = () => {
               name="email"
               autoComplete="email"
               autoFocus
+              value={email}
+              onChange={onChangeEmail}
             />
             <TextField
               margin="normal"
@@ -79,27 +123,37 @@ export const Auth: VFC = () => {
               type="password"
               id="password"
               autoComplete="current-password"
+              value={password}
+              onChange={onChangePass}
             />
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
-            />
-            <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-              Sign In
+            /> */}
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={login ? onClickSignInMail : onClickSignUpMail}
+              sx={{ mt: 3, mb: 2 }}
+            >
+              {login ? "Sign In" : "Sign Up"}
             </Button>
             <Button fullWidth variant="contained" onClick={signInGoogle}>
               SignIn with Google
             </Button>
             <Grid container>
               <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
+                <Button sx={{ fontSize: "10px" }}>Forgot password?</Button>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
+                <Button
+                  sx={{ fontSize: "10px" }}
+                  onClick={() => setLogin(!login)}
+                >
+                  {login
+                    ? "Don't have an account? Sign Up"
+                    : "Already have an account? Sign In"}
+                </Button>
               </Grid>
             </Grid>
           </Box>

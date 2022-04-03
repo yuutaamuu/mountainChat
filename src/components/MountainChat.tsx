@@ -1,6 +1,14 @@
 import { Box, Container, Typography } from "@mui/material";
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  Timestamp,
+} from "firebase/firestore";
 import firebase, { FirebaseApp } from "firebase/app";
+import "firebase/firestore";
 import { useEffect, useState, VFC } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -36,7 +44,7 @@ type DBDATA = {
   photo: string;
   title: string;
   uid: string;
-  timestamp: string;
+  timestamp: Date;
 };
 
 export const MountainChat: VFC = () => {
@@ -54,22 +62,22 @@ export const MountainChat: VFC = () => {
     const querySnapshot = await getDocs(q);
     const result: any[] = [];
     querySnapshot.forEach((doc) => {
-      // console.log(doc.data());
-      // const newChat = [...datas, doc.data() as DBDATA];
-      // console.log(newChat);
-      // setDatas(newChat);
       const data = {
         name: doc.data().name,
         photo: doc.data().photo,
         title: doc.data().title,
         uid: doc.data().uid,
-        time: doc.data().time,
+        timestamp: doc.data().timestamp.toDate(),
       };
       console.log(data);
       result.push(data);
     });
     setDatas(result);
   };
+
+  // const timestamp = (datetimeStr: string) => {
+  //   return Timestamp.fromDate(new Date(datetimeStr));
+  // };
 
   const getArr = () => {
     const arr = [1, 2, 3];
@@ -88,7 +96,7 @@ export const MountainChat: VFC = () => {
     }
   }, []);
 
-  console.log(datas);
+  console.log(datas[1]);
   return (
     <>
       <Header />
@@ -122,9 +130,19 @@ export const MountainChat: VFC = () => {
         >
           {datas.map((data, index) =>
             data.name === user.displayName ? (
-              <MySingleChat key={index} title={data.title} photo={data.photo} />
+              <MySingleChat
+                key={index}
+                title={data.title}
+                photo={data.photo}
+                time={data.timestamp}
+              />
             ) : (
-              <SingleChat key={index} title={data.title} photo={data.photo} />
+              <SingleChat
+                key={index}
+                title={data.title}
+                photo={data.photo}
+                time={data.timestamp}
+              />
             )
           )}
         </Box>

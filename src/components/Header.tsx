@@ -1,6 +1,6 @@
 import React, { VFC } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectuser, login, logout } from "../features/userSlice";
+import { selectuser, logIn, logout } from "../features/userSlice";
 import "./Header.css";
 
 import AppBar from "@mui/material/AppBar";
